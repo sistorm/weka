@@ -27,7 +27,7 @@ import weka.core.neighboursearch.NearestNeighbourSearch;
  */
 public class Main {
 
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	private static String TRAINNING_FILE_PATH = "./data/spamdata-dev.arff";
 
@@ -39,12 +39,12 @@ public class Main {
 
 		// load data
 
-		Instances train = loadInstaces(TRAINNING_FILE_PATH);
+		Instances train = loadInstances(TRAINNING_FILE_PATH);
 		train.setClassIndex(train.numAttributes() - 1);
 
 		Instances test;
 		try {
-			test = loadInstaces(args[0]);
+			test = loadInstances(args[0]);
 			test.setClassIndex(test.numAttributes() - 1);
 		} catch (Exception ex) {
 			throw new InvalidPathException("Invalid input file for validation (parameter 1)", ex.getMessage());
@@ -62,7 +62,7 @@ public class Main {
 		Classifier naiveBayesClassifier = pepareNaiveBayesClassifier();
 		naiveBayesClassifier.buildClassifier(train);
 
-		Classifier moreEffectiveClassifier = naiveBayesClassifier;
+		Classifier moreEffectiveClassifier = j48Classifier;
 		Classifier lessEffectiveClassifier = IBkClassifier;
 
 		// output predictions
@@ -117,7 +117,7 @@ public class Main {
 
 	}
 
-	private static Instances loadInstaces(String location) throws Exception {
+	private static Instances loadInstances(String location) throws Exception {
 		Instances instances = DataSource.read(location);
 		return instances;
 	}
@@ -142,6 +142,7 @@ public class Main {
 				output.print(test.instance(i).toString(test.classIndex()));
 				output.print(" - ");
 			}
+			//print predicted value
 			output.print(test.classAttribute().value((int) pred));
 			if (DEBUG) {
 				if (pred == test.instance(i).classValue())
